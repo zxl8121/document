@@ -1,0 +1,83 @@
+1、Snort
+入侵检测系统
+
+2、PAM
+ PMA(Pluggable Authentication Module)是一个可插入式认证模块,在Linux系统中,各种不同的应用程序都需要完成认证功能,为了实现统一调配,把所有需要认证的功能做成一个模块(认证机制特别复杂的除外,如:https),当特定的程序需要完成认证功能的时候,就去调用PMA的认证模块,这些模块都位于系统中的/lib64/security(/lib/security:32位操作系统)目录下,但并不是所有的模块都是用来完成认证的,有些模块是为了实现PAM的某些高级功能而存在的,其中PMA的认证库是由glibc提供的,应用程序最终使用哪个PMA模块,取决于/etc/pma.d/*这个目录下的定义
+
+例如：只有sshusers组的用户能使用ssh远程登录
+[root@lidefu etc]# groupadd sshusers              #添加一个组
+[root@lidefu etc]# vim /etc/pam.d/sshd            #编辑远程登录的pam
+ auth       required     pam_listfile.so item=group sense=allow file=/etc/security/allow-groups                    #添加这一句
+[root@lidefu etc]# vim /etc/security/allow-groups  #编辑组文件,就是上面那个
+sshusers                                           #添加组
+
+例如：检查login程序是否支持PAM
+ldd `which login` | grep libpam  
+
+3、YAML 
+YAML 是专门用来写配置文件的语言，非常简洁和强大，远比 JSON 格式方便。
+
+4、svn
+yum -y install subversion
+svn checkout https://10.95.24.33/svn/qwhale
+(svn co)
+
+5、git相关命令
+git init
+
+
+远程仓相关操作：
+git remote add origin git@github.com:zxl8121/learngit.git //关联远程仓账户
+git pull --rebase origin master //合并远程仓和本地仓代码
+git checkout -- [file name]//若文件有修改，可以还原到最初状态 ; 若文件需要更新到服务器上，应该先merge到服务器，再更新到本地
+git checkout [remote branch](若分支为本地分支，则需切换到服务器的远程分支)
+git pull //更新远程仓代码到本地
+git push -u origin master  //将本地仓同步到远程
+git push origin master  //提交本地仓
+git remote -v//查看远程库信息
+git checkout -b zxl_libta //创建分支
+git branch //查看当前分支
+git checkout master//切换分支
+git branch -d master//删除master分支
+git add readme.txt 
+git commit -m "branch test"
+git clone git@git.skyeye.world:zhuoliang/libta.git
+git remote add origin git@git.skyeye.world:zhuoliang/libta.git
+
+git status //查看本地分支文件信息，确保更新时不产生冲突
+git log --pretty=oneline
+git diff HEAD -- readme.txt 
+
+git clone 下载源码
+
+git tag　列出所有版本号
+
+git checkout　+某版本号　
+
+
+6、gdb常用命令记录
+
+
+
+5、vim常用命令记录
+
+Ctrl + O 上次光标
+Ctrl + I 后续光标
+Ctrl+】 装了Ctag的插件可以跳转函数定义 
+纵向调整
+res(ize) num  例如：:res 5，显示行数调整为5行
+横向调整
+:vertical res(ize) num 指定当前窗口为num列
+
+:nohl 取消高亮
+
+
+树形插件
+:NERDTree
+
+
+python相关：
+
+补全和条状到函数定义
+jedi-vim
+\d 调转到定义出命令

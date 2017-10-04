@@ -1,0 +1,134 @@
+shell命令以及一些教程：
+http://www.runoob.com/linux/linux-system-boot.html
+
+1、Supervisor
+ 一个用 Python 写的进程管理工具，可以很方便的用来在 UNIX-like 系统（不支持 Windows）下启动、重启（自动重启程序）、关闭进程（不仅仅是 Python 进程）
+
+supervisord（supervisor 是一个 C/S 模型的程序，这是 server 端，对应的有 client 端：supervisorctl）
+echo_supervisord_conf>/etc/supervisord.conf 命令输出默认的配置项，也可以重定向到一个配置文件里
+
+启动 supervisord（通过 -c 选项指定配置文件路径，如果不指定会按照这个顺序查找配置文件：$CWD/supervisord.conf, $CWD/etc/supervisord.conf, /etc/supervisord.conf）：
+
+program 配置 推荐在supervisord.conf中下面include中包含自己的配置文件，例如添加一个被监控进程usercenter，配置文件usercenter.conf
+一份配置文件至少需要一个 [program:x] 部分的配置，来告诉 supervisord 需要管理那个进程。[program:x] 语法中的 x 表示 program name，会在客户端（supervisorctl 或 web 界面）显示，在 supervisorctl 中通过这个值来对程序进行 start、restart、stop 等操作
+
+Supervisorctl 是 supervisord 的一个命令行客户端工具
+> status    # 查看程序状态
+> stop usercenter   # 关闭 usercenter 程序
+> start usercenter  # 启动 usercenter 程序
+> restart usercenter    # 重启 usercenter 程序
+> reread    ＃ 读取有更新（增加）的配置文件，不会启动新添加的程序
+> update    ＃ 重启配置文件修改过的程序
+
+2、ipcs、ipcrm（释放IPC）
+使用IPCS可以查看共享内存、信号量、消息队列的状态
+
+3、chkconfig
+命令用来更新、查询、修改不同运行级上的系统服务。比如安装了httpd服务，并且把启动的脚本放在了/etc/rc.d/init.d目录下，有时候需要开机自动启动它，而有时候则不需要，因此，就可以使chkconfig命令来进行控制，这个命令就相当于一个开关，不过这个开关有[0-6]共7个档
+
+4、ethtool
+ethtool -p eth0   指定物理口灯闪烁
+ethtool –i ethX    //查询ethX网口的相关信息 
+
+5、dirname
+$0：当前Shell程序的文件名
+dirname $0，获取当前Shell程序的路径
+cd `dirname $0`，进入当前Shell程序的目录
+
+5、重定向
+ls test.sh test1.sh >/dev/null 2>&1 
+#将错误输出2 绑定给 正确输出 1，然后将 正确输出 发送给 /dev/null设备  这种常用 
+
+6、rpm
+rpm -Uvh 升级rpm包
+rpm -ivh 安装rpm包
+rpm -qa |grep rpm报名
+
+7、nm
+nm -A -D *.so|grep 函数名
+nm -o /usr/lib/lib*.so |grep 函数名
+-A 在每个符号信息的前面打印所在对象文件名称；
+-D 打印动态符号；
+
+8、yum
+yum list 软件包    搜索所有此软件包（不同版本）
+yum search 软件包  搜索包含此名称的软件包
+yum install 软件包
+yum -y localinstall rpm/*.rpm --disablerepo=\*    其中--disablerepo=\*只从本地获取
+yum源配置/etc/yum.repos.d/CentOS-Base.repo
+yum -y remove 软件包 卸载软件
+yum check-update  列出所有可更新的软件清单
+yum update 更新软件包或所有可更新软件包
+
+DNS服务器配置/etc/resolv.conf 配置内容为
+nameserver 114.114.114.114 
+
+yum  whatprovides  */lspci  /*查找lspci是通过哪个安装包来提供的
+yum install pciutils
+
+9、Postfix
+linux邮件服务器
+
+10、Nginx
+Nginx (engine x) 是一个高性能的HTTP和反向代理服务器，也是一个IMAP/POP3/SMTP服务器
+
+11、iptables
+防火墙
+
+12、taskset -c
+获取或指定进程运行的CPU taskset设定cpu亲和力，cpu亲和力是指
+CPU调度程序属性关联性是“锁定”一个进程，使他只能在一个或几个cpu线程上运行
+
+-a, --all-tasks 操作所有的任务线程-p, --pid 操作已存在的pid-c, --cpu-list 通过列表显示方式设置CPU
+
+13、nice
+在当前程序运行优先级基础之上调整指定值得到新的程序运行优先级 优先级的范围为-20~19
+-n, --adjustment=ADJUST 指定程序运行优先级的调整值。
+nice -n -21 nice  ##设置nice运行优先级为-20
+
+15、动态库相关
+1）ldconfig命令简介
+		注意：当添加或删除动态库时，需要手动执行ldconfig命令，将所有动态库信息重新加载进/etc/ld.so.cache（动态装入程序(ld.so)所需的连接和缓存文件）
+		ldconfig -p | grep libxxx.so //查看ld.conf.d(ld.so.conf)配置动态库的加载路径的所有动态库
+2）nm命令简介（常用nm -AD /usr/lib64/*|grep function_name|c++filt  c++filt转换为可读风格,好像没用啊）：
+（符号中类型的一些含义：T--该符号位于代码区text section U--该符号在当前文件中是未定义的，即该符号的定义在别的文件中 详细参看--http://blog.csdn.net/solmyr_biti/article/details/6565479）
+		-A：每个符号前显示文件名
+		-D：显示动态符号（对于动态库查看符号 此参数选项非常有用）
+		-g：仅显示外部符号
+		-r：反序显示符号表
+3）ldd 命令
+		ldd 可执行文件或动态库名称  //查看动态库依赖
+		ldd ./a.out  | grep libxxx.so  //查看执行文件中依赖的库的情况
+		ldd -r xxx.so或者 nm -A xxx.so等命令，查看so有哪些符号未定义的
+		-r：执行数据对象和函数的重定位，并且报告任何丢失的对象和函数；
+		-d：执行重定位和报告任何丢失的对象；
+4）readelf
+		readelf -d ./a.out | grep RPATH //判断是否设置了 rpath
+5）locate
+		locate+库名  定位指定库的在当前系统中存在路径  
+
+strings /lib64/libc.so.6 |grep GLIBC_ 查看glibc版本号
+env | grep LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=
+ldd ./a.out
+判断是否因为 LD_LIBRARY_PATH 起的作用
+
+16、查看磁盘空间大小 
+df -h
+
+17、find命令使用说明
+find / -size +100M 查找大于100M的文件
+
+18、man手册安装
+yum -y install man;yum -y install man-pages
+
+14、删除c库命令无法使用
+LD_PRELOAD=/lib64/libc-2.12.so ln -sf /usr/local/glibc-2.14/lib/libc-2.14.so /lib64/libc.so.6
+
+
+13、Python相关命令
+	1）easy_install 
+	
+	2)pip
+	
+	3)

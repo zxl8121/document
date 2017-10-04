@@ -1,0 +1,27 @@
+1、Supervisor
+ 一个用 Python 写的进程管理工具，可以很方便的用来在 UNIX-like 系统（不支持 Windows）下启动、重启（自动重启程序）、关闭进程（不仅仅是 Python 进程）
+
+supervisord（supervisor 是一个 C/S 模型的程序，这是 server 端，对应的有 client 端：supervisorctl）
+echo_supervisord_conf>/etc/supervisord.conf 命令输出默认的配置项，也可以重定向到一个配置文件里
+
+启动 supervisord（通过 -c 选项指定配置文件路径，如果不指定会按照这个顺序查找配置文件：$CWD/supervisord.conf, $CWD/etc/supervisord.conf, /etc/supervisord.conf）：
+
+program 配置 推荐在supervisord.conf中下面include中包含自己的配置文件，例如添加一个被监控进程usercenter，配置文件usercenter.conf
+一份配置文件至少需要一个 [program:x] 部分的配置，来告诉 supervisord 需要管理那个进程。[program:x] 语法中的 x 表示 program name，会在客户端（supervisorctl 或 web 界面）显示，在 supervisorctl 中通过这个值来对程序进行 start、restart、stop 等操作
+
+Supervisorctl 是 supervisord 的一个命令行客户端工具
+> status    # 查看程序状态
+> stop usercenter   # 关闭 usercenter 程序
+> start usercenter  # 启动 usercenter 程序
+> restart usercenter    # 重启 usercenter 程序
+> reread    ＃ 读取有更新（增加）的配置文件，不会启动新添加的程序
+> update    ＃ 重启配置文件修改过的程序
+
+2、python setup.py install 来安装python包，只能手动删除安装的文件
+python setup.py install --record files.txt 记录安装后文件的路径
+cat files.txt | xargs rm -rf  删除这些文件
+
+
+3、PyCharm的快捷键
+PyCharm的快捷键Ctrl+Alt+左箭头（后退）和Ctrl+Alt+右箭头（前进）
+
