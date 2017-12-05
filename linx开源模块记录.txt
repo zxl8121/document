@@ -23,19 +23,20 @@ svn checkout https://10.95.24.33/svn/qwhale
 (svn co)
 
 5、git相关命令
+连接前需要生成ssh公私钥，然后添加到github，随后关联（git remote add ***），然后git clone便可以克隆
+ssh-keygen -t rsa -C "zhaoxuelei@b.360.cn"
+
 git init
-
-
 远程仓相关操作：
 git remote add origin git@github.com:zxl8121/learngit.git //关联远程仓账户
 git pull --rebase origin master //合并远程仓和本地仓代码
 git checkout -- [file name]//若文件有修改，可以还原到最初状态 ; 若文件需要更新到服务器上，应该先merge到服务器，再更新到本地
 git checkout [remote branch](若分支为本地分支，则需切换到服务器的远程分支)
-git pull //更新远程仓代码到本地
-git push -u origin master  //将本地仓同步到远程
+git pull origin zxl_libta //更新远程仓代码到本地
+git push -u origin master  //将本地仓同步到远程  -u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令
 git push origin master  //提交本地仓
 git remote -v//查看远程库信息
-git checkout -b zxl_libta //创建分支
+git checkout -b zxl_libta //创建分支(等同于 git branch zxl_libta  git checkout dev )
 git branch //查看当前分支
 git checkout master//切换分支
 git branch -d master//删除master分支
@@ -43,6 +44,12 @@ git add readme.txt
 git commit -m "branch test"
 git clone git@git.skyeye.world:zhuoliang/libta.git
 git remote add origin git@git.skyeye.world:zhuoliang/libta.git
+git merge dev //命令用于合并指定分支到当前分支
+
+删除文件
+git rm test.txt
+git commit -m "remove test.txt"
+git checkout -- test.txt   //用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”
 
 git status //查看本地分支文件信息，确保更新时不产生冲突
 git log --pretty=oneline
@@ -52,8 +59,31 @@ git clone 下载源码
 
 git tag　列出所有版本号
 
-git checkout　+某版本号　
+git checkout　+某版本号
 
+-------------Git fetch和git pull的区别:
+都可以从远程获取最新版本到本地
+
+1.Git fetch:只是从远程获取最新版本到本地,不会merge(合并)
+$:git fetch origin master   //从远程的origin的master主分支上获取最新版本到origin/master分支上
+$:git log -p master..origin/master //比较本地的master分支和origin/master分支的区别
+$:git merge origin/master          //合并
+
+2.Git fetch:从远程获取最新版本并merge(合并)到本地
+$:git pull origin master  //相当于进行了 git fetch 和 git merge两部操作
+
+实际工作中,可能git fetch更好一些, 因为在merge前,可以根据实际情况决定是否merge
+
+再说导致报错:error: You have not concluded your merge (MERGE_HEAD exists).的原因可能是在以前pull下来的代码自动合并失败
+解决办法一:保留本地的更改,中止合并->重新合并->重新拉取
+$:git merge --abort
+$:git reset --merge
+$:git pull
+
+解决办法二:舍弃本地代码,远端版本覆盖本地版本(慎重)
+$:git fetch --all
+$:git reset --hard origin/master
+$:git fetch　
 
 6、gdb常用命令记录
 
@@ -71,9 +101,25 @@ res(ize) num  例如：:res 5，显示行数调整为5行
 
 :nohl 取消高亮
 
+TAB替换为空格：
+:set ts=4
+:set expandtab
+:%retab!
+
+空格替换为TAB：
+:set ts=4
+:set noexpandtab
+:%retab!
+
 
 树形插件
 :NERDTree
+
+ctag相关：
+ctags -R --sort=yes --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++
+
+目录背景色：
+cp /etc/DIR_COLORs ~/.dir_colors
 
 
 python相关：

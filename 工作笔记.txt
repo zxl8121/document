@@ -1,0 +1,45 @@
+1、Postfix
+admin
+skyeye360_admin
+
+diagnose
+Qihoo-360-123!@#
+
+2
+Qwhale: https://10.95.24.33/svn/qwhale     
+Sensor-Serverids: https://10.95.24.33/svn/sensor-serverids/trunk 
+
+Username: zhaoxuelei  Password: ^int76&*zxl
+
+3、ta相关调试
+10.95.38.27 
+
+启动发送端脚本：
+./run_ta_client.sh
+
+#!/bin/bash
+
+set -e
+set -x
+
+ROOT=$(pwd)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT/bin/third_party
+
+./bin/ta_client ./conf/ta_boot_sensor_client.ini
+
+
+启动接收端脚本：
+./run_ta_server.sh 
+
+#!/bin/bash
+
+set -e
+set -x
+
+ROOT=$(pwd)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOT/bin/third_party
+
+./bin/ta_server ./conf/ta_boot_sensor_server.xml
+

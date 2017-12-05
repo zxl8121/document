@@ -25,3 +25,17 @@ cat files.txt | xargs rm -rf  删除这些文件
 3、PyCharm的快捷键
 PyCharm的快捷键Ctrl+Alt+左箭头（后退）和Ctrl+Alt+右箭头（前进）
 
+
+4、pdb相关命令
+python -m pdb *.py
+help(h) 帮助
+b 10 #断点设置在本py的第10行 
+b ots.py:20 #断点设置到 ots.py第20行
+b #查看断点编号
+cl 2 #删除第2个断点
+n #单步运行
+s #细点运行 也就是会下到，方法
+c #跳到下个断点
+p param #查看当前 变量值
+l #查看运行到某处代码
+a #查看全部栈内变量
