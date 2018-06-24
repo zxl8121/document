@@ -24,3 +24,29 @@ disas /m function
 i line lineNumber(for example: i line 13)
 想查看这一条语句对应的汇编代码，可以使用“disassemble [Start],[End]”命令
 disassemble 0x4004e9, 0x40050c
+6、多线程/进程
+1)显示线程信息
+i threads
+2)调试一个线程时，让其它线程暂停执行
+set scheduler-locking on
+7、改变程序的执行
+1)修改被调用的二进制文件
+gcc -write ./a.out
+disassemble /mr drawing 
+set variable *(short*)0x400651=0x0ceb
+8、共享库
+1)显示共享库信息
+info sharedlibrary
+9、脚本
+1）保存历史命令
+set history save on
+set history filename fname
+10、其它
+1）设置参数
+show args
+set args a b c
+2）记录执行gdb的过程
+set logging file log.txt
+set logging on
+
+
